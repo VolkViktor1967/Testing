@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+          
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+<h:head>
+        <title>Header</title>
+        <h:outputStylesheet library="css"  name="style_main.css" />
+    </h:head>   
+    <h:body>
+        
+        <ui:composition >
+            <div class="logo">
+                <h:graphicImage library="images" name="Jobs.jpg" width="76" height="97" />
+            </div>
+            <div class="descr">
+                <h5>#{msg.welcom_title}</h5>
+            </div>
+             <div class="descr">
+                 <h5> #{msg.welcom} </h5>
+                 <h6> #{msg.exit} </h6>
+             </div>
+           
+             <div class="search_form">  
+                <h:form >
+                    <h:inputText id="search_form" styleClass="search_input" />
+                      <h:commandButton value="#{msg.search}" styleClass="search_string"/> 
+                    
+                    <h:selectOneMenu value="#{searchController1.searchType}">
+                       
+                        <f:selectItems value="${searchController1.searchList}" />
+                         
+                    </h:selectOneMenu>
+                           
+                </h:form>  
+             </div> 
+            
+        </ui:composition>
+        
+    </h:body>
+</html>

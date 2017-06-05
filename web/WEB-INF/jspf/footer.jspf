@@ -1,0 +1,16 @@
+<%-- 
+    Document   : footer.jspf
+    Created on : May 17, 2017, 3:31:33 PM
+    Author     : User
+--%>
+
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
+            <div class="content">
+                <h1>&nbsp;</h1>
+                <p>&nbsp;</p>
+            </div>
+
+        </div> <!--end container -->
+    </body>              
+
+</html>

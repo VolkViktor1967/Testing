@@ -1,0 +1,66 @@
+<%-- 
+    Document   : left_page.jspf
+    Created on : May 17, 2017, 3:32:17 PM
+    Author     : User
+--%>
+
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@page import="beans.GanreList"%>
+<%@page import="beans.Ganre"%>
+<%@page import="beans.Author"%>
+<%@page import="beans.AuthorList"%>
+<%@ taglib prefix = "c" uri = "http://java.sun.com/jsp/jstl/core" %>
+
+<!DOCTYPE html>
+<div class="sidebar1">
+    <h4>Жанры:</h4>
+    
+        <%--   Первый способ 
+        <% AuthorList authorList = new AuthorList();
+            for (Author author : authorList.getAuthorList()) {
+        %>
+        <li><a href="#"><%=author.getName()%></a> </li>
+            <%}%>
+        --%>
+        <jsp:useBean id="ganreList" class="beans.GanreList" scope="application" />
+        
+        <%--   Второй способ 
+        <c:forEach var="ganre" items="${ganreList.getGanreList()}" >
+            <li><a href="#">${ganre.name}</a> </li>
+        </c:forEach>
+         --%>
+        <%-- Третий вариант --%>
+        
+        <%
+            long selectedGanreId =0L;
+            if (request.getParameter("genre_id")!=null) {
+               selectedGanreId = Long.valueOf(request.getParameter("genre_id"));
+            } else{
+               if (session.getAttribute("genre_id")!=null){
+                   selectedGanreId = Long.valueOf(session.getAttribute("genre_id").toString());
+               }
+            }
+            session.setAttribute("genre_id",selectedGanreId);
+
+        %>
+        
+        
+        <li><a href="books.jsp?genre_id=0&name=Все книги">Все книги</a> </li>
+        <% 
+            for (Ganre ganre : ganreList.getGanreList()) {
+                System.out.println(ganre.getName());
+                if ((selectedGanreId!=0L)&&(selectedGanreId==ganre.getId())) 
+                        {
+        %>
+        <li><a style="color: red" href="books.jsp?genre_id=<%=ganre.getId()%>&name=<%=ganre.getName()%>"><%=ganre.getName()%></a> </li>
+        <%
+            }else{
+        %>
+        <li><a href="books.jsp?genre_id=<%=ganre.getId()%>&name=<%=ganre.getName()%>"><%=ganre.getName()%></a> </li>
+            <%}
+            }     
+            %>
+        
+
+    
+</div>
