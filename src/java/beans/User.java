@@ -12,7 +12,8 @@ import javax.enterprise.context.SessionScoped;
 
 /**
  *
- * @author User
+ * @author VolkViktor1967
+ * 
  */
 @Named(value = "user1")
 @SessionScoped
