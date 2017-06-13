@@ -29,7 +29,7 @@ public class Book implements Serializable{
     private String isbn;
     private String genre;
     private String author;
-    private Date   publishDate;
+    private Long   publishYear;
     private String publisher;
     private byte[] image;
 
@@ -65,8 +65,8 @@ public class Book implements Serializable{
         return author;
     }
 
-    public Date getPublishDate() {
-        return publishDate;
+    public Long getPublishYear() {
+        return publishYear;
     }
 
     public String getPublisher() {
@@ -105,8 +105,8 @@ public class Book implements Serializable{
         this.author = author;
     }
 
-    public void setPublishDate(Date publishDate) {
-        this.publishDate = publishDate;
+    public void setPublishYear(Long publishYear) {
+        this.publishYear = publishYear;
     }
 
     public void setPublisher(String publisher) {

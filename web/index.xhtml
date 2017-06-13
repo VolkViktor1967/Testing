@@ -29,7 +29,7 @@ and open the template in the editor.
                     #{msg.input_name}<h:inputText id="username" value="#{user1.username}" required="true" requiredMessage="#{msg.input_error}" >
                     <f:validator validatorId = "validators.UserValidator" />
                     </h:inputText>
-                    <h:commandButton action="pages/books"  value=" Войти " />
+                    <h:commandButton action="#{loginControllers.login()}"  value=" Войти " />
                     <p><h:messages for="username" styleClass="error" layout="list" /></p>
                 </h:form>
             </div>

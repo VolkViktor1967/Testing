@@ -23,24 +23,37 @@ and open the template in the editor.
             <div class="descr">
                 <h5>#{msg.welcom_title}</h5>
             </div>
-             <div class="descr">
-                 <h5> #{msg.welcom} </h5>
-                 <h6> #{msg.exit} </h6>
+             <div class="welcome">
+                 <h5> #{msg.welcom},#{user1.username} </h5>
+                 <h:form>
+                     <h:commandLink action="#{loginControllers.exit()}" value="#{msg.exit}" />
+                 </h:form>
              </div>
            
              <div class="search_form">  
                 <h:form >
-                    <h:inputText id="search_form" styleClass="search_input" />
-                      <h:commandButton value="#{msg.search}" styleClass="search_string"/> 
+                    <h:inputText id="search_form" styleClass="search_input" value="#{searchController.searchString}" />
+                    <h:commandButton value="#{msg.search}" action="#{searchController.FillBookBySearch()}"  styleClass="search_string"/> 
                     
-                    <h:selectOneMenu value="#{searchController1.searchType}">
+                    <h:selectOneMenu value="#{searchController.searchType}">
                        
-                        <f:selectItems value="${searchController1.searchList}" />
+                        <f:selectItems value="${searchController.searchList}" />
                          
                     </h:selectOneMenu>
                            
                 </h:form>  
              </div> 
+            
+            <div class="letters">
+                <h:form>                    
+                <ui:repeat value="#{searchController.russianLetters}" var="letter">
+                    <h:commandLink action="#{searchController.FillBookByLetters()}" value="#{letter}">
+                        <f:param name="letter" value="#{letter}" />
+                    </h:commandLink>
+                        
+                </ui:repeat>
+                </h:form>
+            </div>
             
         </ui:composition>
         
