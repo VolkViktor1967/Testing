@@ -21,15 +21,16 @@ and open the template in the editor.
             <ui:define name="title">
                 #{msg.book_title}
             </ui:define>           
-            <!--
             
-            -->    
             <ui:define name="book_count">
                 <p><strong>#{msg.book_count} #{searchController.totalBookCount} </strong> </p>
             </ui:define>
 
+            
+
             <ui:define name="content_book">    
                 <h:dataTable value="#{searchController.currentBookList}" var="b" cellspacing="10px" columnClasses="col1,col2,col3">
+                   
                     <h:column>
                         <h:outputLink value="#{request.contextPath}/PdfContent?id=#{b.id}" target="_blank">
                             <h:graphicImage value="/ShowImage?id=#{b.id}" width="110" height="140"/>
@@ -54,16 +55,11 @@ and open the template in the editor.
                         </div>
                     </h:column>
 
-
                 </h:dataTable>
-
             </ui:define>
-            <!--
-            <div  class="pager">
-            -->
+        
+            
             <ui:define name="pagenator">
-
-                    
                 <h:form rendered="#{searchController.totalBookCount>searchController.bookOnPage}">
 
                     <ui:repeat value="#{searchController.pageNambers}" var="pageNamber">
@@ -73,17 +69,8 @@ and open the template in the editor.
                     </ui:repeat>
 
                 </h:form>
-    
-
             </ui:define>                        
 
-            <!--    
-            </div>
-            -->
-
-            <!--    
-            </ui:define>
-            -->
 
         </ui:composition>
 
