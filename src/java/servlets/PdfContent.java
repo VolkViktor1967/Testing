@@ -38,16 +38,22 @@ public class PdfContent extends HttpServlet {
         OutputStream out = response.getOutputStream();
         try{
             
-           int index = Integer.valueOf(request.getParameter("index"));
-            
-                   
-            ArrayList<Book> list = (ArrayList<Book>)request.getSession(false).getAttribute("currentBookList");
-            Book book = list.get(index);
-            book.fillPdfContent();
-            if(book.getContent()!=null){
+           int id = Integer.valueOf(request.getParameter("id"));
+           
+          ArrayList<Book> list = (ArrayList<Book>)request.getSession(false).getAttribute("currentBookList");
+          Book book;
+          
+          int i=0;
+          do{
+            book = list.get(i);
+            i++;
+          }while (book.getId()!=id);
+           
+           book.fillPdfContent();
+           if(book.getContent()!=null){
               response.setContentLength(book.getContent().length);
               out.write(book.getContent());
-            }
+           }
             
         }catch(IOException | NumberFormatException e){
                System.out.println("PdfContent ERROR!");

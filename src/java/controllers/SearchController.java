@@ -25,6 +25,8 @@ import java.util.logging.Logger;
 import javax.faces.bean.ManagedBean;
 
 import javax.faces.context.FacesContext;
+import javax.servlet.http.HttpSession;
+import org.apache.jasper.tagplugins.jstl.ForEach;
 
 
 /**
@@ -33,16 +35,88 @@ import javax.faces.context.FacesContext;
  */
 
 
-@ManagedBean(eager = true)
+/*@ManagedBean(eager = true)
+@SessionScoped*/
+
+@Named(value = "searchController")
 @SessionScoped
 
 public class SearchController implements Serializable {
+    
+    private boolean requestFromPage=false;
+    private int bookOnPage =2;
+    private int selectedGenreId;
+    private char selectedLetter;
+    private long selectedPageNumber=1;
+    private long totalBookCount;
+    private ArrayList<Integer> pageNambers = new ArrayList<>();
+    
     
     private SearchType searchType;
     private static Map<String, SearchType> searchList = new HashMap<String, SearchType>();
     private ArrayList<Book> currentBookList;
     private Character[] russianLetters;
     private String searchString;
+    private String currentSql;
+    
+    
+    public SearchController() {
+        
+         getAllBook();
+         ResourceBundle bandle = ResourceBundle.getBundle("lns.messages", FacesContext.getCurrentInstance().getViewRoot().getLocale());
+         searchList.put(bandle.getString("author_name"), SearchType.AUTHOR);
+         searchList.put(bandle.getString("book_name"), SearchType.TITLE);
+         
+    }
+    
+
+    public void setBookOnPage(int bookOnPage) {
+        this.bookOnPage = bookOnPage;
+    }
+
+    public void setSelectedGenreId(int selectedGenreId) {
+        this.selectedGenreId = selectedGenreId;
+    }
+
+    public void setSelectedLetter(char selectedLetter) {
+        this.selectedLetter = selectedLetter;
+    }
+
+    public void setSelectedPageNumber(long selectedPageNumber) {
+        this.selectedPageNumber = selectedPageNumber;
+    }
+
+    public void setTotalBookCount(long totalBookCount) {
+        this.totalBookCount = totalBookCount;
+    }
+
+    public void setPageNambers(ArrayList<Integer> pageNambers) {
+        this.pageNambers = pageNambers;
+    }
+
+    public int getBookOnPage() {
+        return bookOnPage;
+    }
+
+    public int getSelectedGenreId() {
+        return selectedGenreId;
+    }
+
+    public char getSelectedLetter() {
+        return selectedLetter;
+    }
+
+    public long getSelectedPageNumber() {
+        return selectedPageNumber;
+    }
+
+    public long getTotalBookCount() {
+        return totalBookCount;
+    }
+
+    public ArrayList<Integer> getPageNambers() {
+        return pageNambers;
+    }
 
     public void setRussianLetters(Character[] russianLetters) {
         this.russianLetters = russianLetters;
@@ -87,17 +161,12 @@ public class SearchController implements Serializable {
     }
         
     
-    public SearchController() {
         
-         getAllBook();
-         ResourceBundle bandle = ResourceBundle.getBundle("lns.messages", FacesContext.getCurrentInstance().getViewRoot().getLocale());
-         searchList.put(bandle.getString("author_name"), SearchType.AUTHOR);
-         searchList.put(bandle.getString("book_name"), SearchType.TITLE);
-         
-    }
-    
-    
     private void FillBookBySql(String sqlstr){
+        
+        StringBuilder sqlBuilder = new StringBuilder(sqlstr);
+        currentSql = sqlstr;
+                
 
         Connection conn=null;
         Statement stmt=null;
@@ -106,9 +175,21 @@ public class SearchController implements Serializable {
         
         try {
             conn = Database.getConnection();
-            
             stmt = conn.createStatement();
-            rs = stmt.executeQuery(sqlstr);
+            
+            if (!requestFromPage) {
+                rs = stmt.executeQuery(sqlBuilder.toString());
+                rs.last();
+                totalBookCount = rs.getRow();
+                fillPageNumbers(totalBookCount, bookOnPage);
+
+            }
+            
+            if (totalBookCount>bookOnPage){ 
+                sqlBuilder.append(" limit ").append((selectedPageNumber)*bookOnPage-bookOnPage).append(",").append(bookOnPage);
+            }
+            
+            rs = stmt.executeQuery(sqlBuilder.toString());
             
             currentBookList = new ArrayList<Book>();
             
@@ -141,7 +222,13 @@ public class SearchController implements Serializable {
                 Logger.getLogger(BookList.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-        System.out.println("bookList");
+        System.out.println(currentBookList.size());
+        
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        HttpSession session = (HttpSession) facesContext.getExternalContext().getSession(false);
+        session.setAttribute("currentBookList", currentBookList);
+        
+        ArrayList<Book> list = (ArrayList<Book>)session.getAttribute("currentBookList");
         return ;
     }
     
@@ -163,7 +250,9 @@ public class SearchController implements Serializable {
                 + "left join library.author a on a.id=b.author_id\n"
                 + "left join library.genre g on g.id=b.genre_id\n"
                 + "left join library.publisher p on p.id=b.publisher_id\n"
-                + "limit 0,2; ");
+                + " ");
+                //+ "limit 0,2; ");
+                selectedGenreId =-1;
     }
     
     public  void fillBookByGenre(){
@@ -172,7 +261,10 @@ public class SearchController implements Serializable {
         FacesContext context = FacesContext.getCurrentInstance();
         String id = context.getExternalContext().getRequestParameterMap().get("genre_id");
         
-        
+        selectedGenreId = Integer.valueOf(id);
+        selectedPageNumber=1;
+        requestFromPage=false;
+                
         System.out.println("Id="+id);
         FillBookBySql("select b.id, b.name, b.isbn, b.page_count, g.name as genre, a.fio as author, p.name as publisher\n,b.image "
                 + "from library.book b\n"
@@ -180,12 +272,14 @@ public class SearchController implements Serializable {
                 + "left join library.genre g on g.id=b.genre_id\n"
                 + "left join library.publisher p on p.id=b.publisher_id\n"
                 + "where b.genre_id= \n"+id+"\n"
-                + "limit 0,2; ");
+                + " ");
     }
     //getBookBySearch
      public  void FillBookBySearch(){
         
         
+        selectedPageNumber=1;
+        requestFromPage=false;
         
         if (searchString.trim().length()==0){
             getAllBook();
@@ -204,16 +298,24 @@ public class SearchController implements Serializable {
         else {
             sql.append("where lower(b.name) like '%").append(searchString.toLowerCase()).append("%'");
         }
-        sql.append(" limit 0,2;");
+        sql.append(" ");
         
         FillBookBySql(sql.toString());
+        
+        //selectedLetter=' ';
+        selectedGenreId =-1;
+        //selectedPageNumber=1;
+        
     }
     
      public  void FillBookByLetters(){
 
         FacesContext context = FacesContext.getCurrentInstance();
         String letter = context.getExternalContext().getRequestParameterMap().get("letter");       
-     
+        
+        selectedPageNumber=1;
+        requestFromPage=false;
+        
         StringBuilder sql = new StringBuilder("select b.id, b.name, b.isbn, b.page_count, g.name as genre, a.fio as author, p.name as publisher\n,b.image "
                 + "from library.book b\n"
                 + "left join library.author a on a.id=b.author_id\n"
@@ -222,9 +324,10 @@ public class SearchController implements Serializable {
         
         
         sql.append("where  substr(b.name,1,1)='").append(letter.toLowerCase()).append("'");
-        sql.append(" limit 0,6;");
+        sql.append(" ");
         
         FillBookBySql(sql.toString());
+        selectedGenreId =-1;
     }
      
      public Character[] getRussianLetters(){
@@ -264,6 +367,26 @@ public class SearchController implements Serializable {
         letters[32]='Я';
         
         return letters;
+    }
+     
+     
+     public void selectPage(){
+        FacesContext context = FacesContext.getCurrentInstance();
+        selectedPageNumber = Integer.valueOf(context.getExternalContext().getRequestParameterMap().get("page_namber"));       
+        requestFromPage=true;
+        FillBookBySql(currentSql);      
+     }
+
+    private void fillPageNumbers(long totalBookCount, int bookOnPage) {
+     
+        int pageCount = totalBookCount>0 ? (int)(totalBookCount/bookOnPage):0;
+        pageNambers.clear();
+        if ((totalBookCount%bookOnPage)>0)  pageCount++;
+
+        for (int i=1; i<=pageCount;i++){
+            pageNambers.add(i);
+        }
+        
     }
      
 }

@@ -36,6 +36,16 @@ public class ShowImage extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
+    
+    //@Inject
+    //SearchController searchControler1;
+    /*@Inject
+    NumberGenerator numberGenerator;*/
+	
+   /* @PostConstruct
+    private void PostConstruct(){
+		System.out.println(numberGenerator.generateNumber());
+   }*/
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         
@@ -44,43 +54,35 @@ public class ShowImage extends HttpServlet {
         
         String ind = request.getParameter("index");
         System.err.println("ShowImage INDEX = "+ind);
-        /*@Inject
-        private SearchController bean;*/
-        
         
         try {
-            int index =Integer.valueOf(request.getParameter("index"));
+            int id =Integer.valueOf(request.getParameter("id"));
             
-            /*User user = (User) request.getSession(false).getAttribute("user1");
-            User user1 = (User) request.getSession(false).getAttribute("user");
-            User user2 = (User) request.getSession(false).getAttribute("User");
-            */
-            //User user = (User) getServletContext().getAttribute("user1");
-            //User user1 = (User) getServletContext().getAttribute("user");
-            //User user2 = (User) getServletContext().getAttribute("User");
-            
-            //HttpSession session=   request.getSession();
-            //SearchController searchControler = (SearchController) session.getAttribute("searchController");
+           /*
             SearchController searchControler = (SearchController) request.getSession().getAttribute("searchController");
-            //SearchController searchControler = (SearchController) getServletContext().getAttribute("searchController");
-            
-            //SearchController searchControler = new SearchController();
-            byte[] image =  searchControler.GetImage(index);
-            //ArrayList<Book> list = (ArrayList<Book>)request.getSession(false).getAttribute("currentBookList");
-            
-
+            byte[] image =  searchControler.GetImage(id);
             response.setContentLength(image.length);
             out.write(image);
-            /* TODO output your page here. You may use following sample code. 
-            out.println("<!DOCTYPE html>");
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet ShowImage</title>");            
-            out.println("</head>");
-            out.println("<body>");
-            out.println("<h1>Servlet ShowImage at " + request.getContextPath() + "</h1>");
-            out.println("</body>");
-            out.println("</html>");*/
+            */
+            
+            ArrayList<Book> list = (ArrayList<Book>)request.getSession(false).getAttribute("currentBookList");
+            Book book;
+          
+            int i=0;
+            do{
+              book = list.get(i);
+              i++;
+            }while (book.getId()!=id);
+           
+            book.fillImageContent();
+            if(book.getImage()!=null){
+              response.setContentLength(book.getImage().length);
+              out.write(book.getImage());
+            }
+            
+            
+            
+            
         }catch(Exception e){
             System.out.println("servlets.ShowImage.processRequest()");
         }

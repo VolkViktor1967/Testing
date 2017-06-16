@@ -179,7 +179,7 @@ ul.nav a:hover,ul.nav a:active,ul.nav a:focus {
     vertical-align: middle;
     padding: 5px;
     float:left; 
-    width: 740px;
+    width: 865px;
 }
 
 .search_input {
@@ -190,7 +190,7 @@ ul.nav a:hover,ul.nav a:active,ul.nav a:focus {
     vertical-align: middle;
     padding: 1px;
     float:left; 
-    width: 560px;
+    width: 700px;
 }
 
 
@@ -306,6 +306,14 @@ body{
 }
 */
 
+.header{
+    float:left;
+    width: 98%;
+    height: 30%;
+    padding-bottom: 10px;
+    margin: 10px;
+    background-color: #eaeaea;
+}
 .middle{
     float:left;
     width: 98%;
@@ -363,6 +371,10 @@ body{
     color: #000;
     text-decoration: none;
 }
+.genres a.selected_ganre {
+    color: red;
+ }
+
 
 .col1{
     vertical-align: top;
@@ -414,3 +426,19 @@ body{
     color: #000;
     text-decoration: none;
 }
+
+.pager{
+    margin-left: 15px;
+    width: 90%;
+    float:left;
+    
+} 
+.pager a{
+    margin-left: 5px;
+    margin-top: 50px;
+}
+
+.pager .selected_page{
+    color: red;
+}
+    

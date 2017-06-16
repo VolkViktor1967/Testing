@@ -8,50 +8,84 @@ and open the template in the editor.
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:ui="http://java.sun.com/jsf/facelets"
-      >
+
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
     <h:head>
         <title>TODO supply a title</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     </h:head>
     <h:body>
-        
+
         <ui:composition template="../templates/library_templates.xhtml">
-            
+
             <ui:define name="title">
                 #{msg.book_title}
             </ui:define>           
+            <!--
             
-            <ui:define name="content">
-                <p><strong>#{msg.book_count} #{searchController.currentBookList.size()} </strong> </p>
-                
-                
+            -->    
+            <ui:define name="book_count">
+                <p><strong>#{msg.book_count} #{searchController.totalBookCount} </strong> </p>
+            </ui:define>
+
+            <ui:define name="content_book">    
                 <h:dataTable value="#{searchController.currentBookList}" var="b" cellspacing="10px" columnClasses="col1,col2,col3">
                     <h:column>
-                        <h:graphicImage value="/ShowImage?index=#{b.id}" width="110" height="140"/>
+                        <h:outputLink value="#{request.contextPath}/PdfContent?id=#{b.id}" target="_blank">
+                            <h:graphicImage value="/ShowImage?id=#{b.id}" width="110" height="140"/>
+                        </h:outputLink>
                     </h:column>
-                    
+
                     <h:column>
                         <div>
-                            <p><a href="#" >#{b.name}</a></p>
+
+                            <h:outputLink value="#{request.contextPath}/PdfContent?id=#{b.id}" target="_blank">#{b.name} </h:outputLink>
                             <p><strong>#{b.pageCount}</strong></p>
-                            
+                            <p><strong>#{b.author}</strong></p>
+                            <p><strong>#{b.genre}</strong></p>
                             <p><strong>#{b.publishYear}</strong></p>
                             <p><strong>#{b.isbn}</strong></p>
                         </div>
                     </h:column>
-                    
+
                     <h:column>
                         <div class="book_details">
-                          <p><strong>#{b.publisher}</strong></p> 
+                            <p><strong>#{b.publisher}</strong></p> 
                         </div>
                     </h:column>
-                    
-                    
+
+
                 </h:dataTable>
-                
+
             </ui:define>
-            
+            <!--
+            <div  class="pager">
+            -->
+            <ui:define name="pagenator">
+
+                    
+                <h:form rendered="#{searchController.totalBookCount>searchController.bookOnPage}">
+
+                    <ui:repeat value="#{searchController.pageNambers}" var="pageNamber">
+                        <h:commandLink value="#{pageNamber}" action="#{searchController.selectPage()}" styleClass="#{pageNamber==searchController.selectedPageNumber ? 'selected_page':''}" >
+                            <f:param name="page_namber" value="#{pageNamber}" />
+                        </h:commandLink>
+                    </ui:repeat>
+
+                </h:form>
+    
+
+            </ui:define>                        
+
+            <!--    
+            </div>
+            -->
+
+            <!--    
+            </ui:define>
+            -->
+
         </ui:composition>
-        
+
     </h:body>
 </html>

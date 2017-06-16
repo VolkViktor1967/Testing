@@ -131,6 +131,7 @@ public class Book implements Serializable{
             
             stmt = conn.createStatement();
             long _id=this.getId();
+                        
             rs = stmt.executeQuery("select content from library.book where id= "+_id);
             /*rs = stmt.executeQuery("select content from library.book where id= 1");*/
             while (rs.next()){
@@ -154,4 +155,40 @@ public class Book implements Serializable{
     }
     
     
+      public void fillImageContent(){
+
+        Connection conn=null;
+        Statement stmt=null;
+        ResultSet rs=null;
+        
+        
+        try {
+            conn = Database.getConnection();
+            
+            stmt = conn.createStatement();
+            long _id=this.getId();
+                        
+            rs = stmt.executeQuery("select image from library.book where id= "+_id);
+            
+            while (rs.next()){
+                
+                this.setImage(rs.getBytes("image"));
+            }
+                                        
+        } catch (SQLException ex) {
+            Logger.getLogger(BookList.class.getName()).log(Level.SEVERE, null, ex);
+        } 
+        finally{
+            try {
+                if (stmt!=null) stmt.close();
+                if (rs!=null) rs.close();
+                if (conn!=null) conn.close();
+            } catch (SQLException ex) {
+                Logger.getLogger(BookList.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        System.out.println("fillPdfContent end");
+    }
+    
+      
 }

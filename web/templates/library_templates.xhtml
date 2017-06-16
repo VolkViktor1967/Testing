@@ -33,14 +33,32 @@ and open the template in the editor.
                     </ui:insert>
                     
                 </div>
+                
                 <div class="content">
 
-                    <ui:insert name="content" >
-                        <ui:include src="/templates/content.xhtml"/> 
-                    </ui:insert>    
-                    
+                    <div  class="countbook">
+                        <p><strong><ui:insert name="book_count"/></strong> </p>
+                    </div>
+                    <div class="pager">
+                        <ui:insert name="pagenator"/>
+                    </div> 
+
+                    <div class="content_book">
+                        <ui:insert name="content_book" >
+                            <ui:include src="/templates/content.xhtml"/> 
+                        </ui:insert>    
+                    </div>    
+
+
+                    <div class="pager">
+                        <ui:insert name="pagenator"/>
+                    </div>   
+
+
                 </div>
+                
              </div>
+            
             <div class="footer" >
                
                 <ui:insert name="footer" >
