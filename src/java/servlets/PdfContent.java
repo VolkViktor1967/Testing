@@ -9,6 +9,7 @@ import beans.Book;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -39,6 +40,8 @@ public class PdfContent extends HttpServlet {
         try{
             
            int id = Integer.valueOf(request.getParameter("id"));
+           Boolean save = Boolean.valueOf(request.getParameter("save"));
+           String  filename = request.getParameter("filename");
            
           ArrayList<Book> list = (ArrayList<Book>)request.getSession(false).getAttribute("currentBookList");
           Book book;
@@ -52,6 +55,11 @@ public class PdfContent extends HttpServlet {
            book.fillPdfContent();
            if(book.getContent()!=null){
               response.setContentLength(book.getContent().length);
+              System.out.println("save="+save);
+              if (save){
+                  response.setHeader("Content-Disposition", "attachment; filename="+URLEncoder.encode(filename,"UTF-8")+".pdf");
+              }
+              
               out.write(book.getContent());
            }
             

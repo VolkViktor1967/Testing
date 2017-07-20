@@ -28,7 +28,7 @@ and open the template in the editor.
 
             
 
-            <ui:define name="content_book">    
+            <ui:define name="content_book" id="content_book">    
                 <h:dataTable value="#{searchController.currentBookList}" var="b" cellspacing="10px" columnClasses="col1,col2,col3">
                    
                     <h:column>
@@ -46,6 +46,15 @@ and open the template in the editor.
                             <p><strong>#{b.genre}</strong></p>
                             <p><strong>#{b.publishYear}</strong></p>
                             <p><strong>#{b.isbn}</strong></p>
+                            
+                            <h:outputLink styleClass="save_link" value="#{request.contextPath}/PdfContent" target="_blank">
+                                <h:outputText value='#{msg.save}'></h:outputText>
+                                <f:param name="id" value="#{b.id}"></f:param>
+                                <f:param name="filename" value="#{b.name}"></f:param>
+                                <f:param name="save" value="true"></f:param>
+                                
+                            </h:outputLink>
+                        
                         </div>
                     </h:column>
 

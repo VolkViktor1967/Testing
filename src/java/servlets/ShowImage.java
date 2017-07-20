@@ -27,7 +27,7 @@ import javax.servlet.http.HttpSession;
 @WebServlet(name = "ShowImage", urlPatterns = {"/ShowImage"})
 public class ShowImage extends HttpServlet {
     int  i=0;
-    /**
+     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
      *
@@ -56,15 +56,18 @@ public class ShowImage extends HttpServlet {
         System.err.println("ShowImage INDEX = "+ind);
         
         try {
-            int id =Integer.valueOf(request.getParameter("id"));
-            
-           /*
+            Long id =Long.valueOf(request.getParameter("id"));
+         
+          
             SearchController searchControler = (SearchController) request.getSession().getAttribute("searchController");
-            byte[] image =  searchControler.GetImage(id);
-            response.setContentLength(image.length);
-            out.write(image);
-            */
-            
+            //byte[] image =  searchControler.GetImage(id-1);
+            Book book = new Book();
+            book.setId(id);
+            book.fillImageContent();
+            response.setContentLength(book.getImage().length);
+            out.write(book.getImage());
+          
+           /* 
             ArrayList<Book> list = (ArrayList<Book>)request.getSession(false).getAttribute("currentBookList");
             Book book;
           
@@ -79,9 +82,9 @@ public class ShowImage extends HttpServlet {
               response.setContentLength(book.getImage().length);
               out.write(book.getImage());
             }
-            
-            
-            
+            */
+           
+           
             
         }catch(Exception e){
             System.out.println("servlets.ShowImage.processRequest()");

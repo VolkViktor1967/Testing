@@ -7,16 +7,29 @@ and open the template in the editor.
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://java.sun.com/jsf/html"
-      xmlns:f="http://java.sun.com/jsf/core">
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+          
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
 
-    
     
       
     <h:head>
         <title>#{msg.welcom_title}</title>
         <h:outputStylesheet library="css" name="style_index.css" />
+        <h:outputScript library="js" name="library.js" />
+        
     </h:head>
     <h:body>
+        
+        <noscript>
+            <h4><p> На Вашем браузере отключен JavaScript </p></h4>
+            <style type="text/css" >
+                .main{display: none;}
+            </style>
+            
+        </noscript>
+            
+            
         <div class="main">
             
             <div class="content" >
@@ -28,10 +41,17 @@ and open the template in the editor.
                 <h:form styleClass="login_form" >
                     #{msg.input_name}<h:inputText id="username" value="#{user1.username}" required="true" requiredMessage="#{msg.input_error}" >
                     <f:validator validatorId = "validators.UserValidator" />
+                    <f:ajax event="keyup" render="login_error"/>
                     </h:inputText>
-                    <h:commandButton action="#{loginControllers.login()}"  value=" Войти " />
-                    <p><h:messages for="username" styleClass="error" layout="list" /></p>
+                                        
+                    <h:commandButton action="#{loginControllers.login()}"  value=" #{msg.entry}" onclick="return CheckValue(this.form,'#{msg.login_required}')" />
+                                        
+                    <p><h:messages for="username" id = "login_error" styleClass="error" layout="list" /></p>
                 </h:form>
+                
+                
+                <ui:include src="templates/locales.xhtml"/>
+                
             </div>
             
            

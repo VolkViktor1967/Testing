@@ -9,8 +9,7 @@ import beans.Book;
 import beans.BookList;
 import db.Database;
 import enums.SearchType;
-import javax.inject.Named;
-import javax.enterprise.context.SessionScoped;
+
 import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -23,8 +22,11 @@ import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.SessionScoped;
+
 
 import javax.faces.context.FacesContext;
+import javax.faces.event.ValueChangeEvent;
 import javax.servlet.http.HttpSession;
 import org.apache.jasper.tagplugins.jstl.ForEach;
 
@@ -35,11 +37,11 @@ import org.apache.jasper.tagplugins.jstl.ForEach;
  */
 
 
-/*@ManagedBean(eager = true)
-@SessionScoped*/
-
-@Named(value = "searchController")
+@ManagedBean(eager = true)
 @SessionScoped
+
+/*@Named(value = "searchController")
+@SessionScoped*/
 
 public class SearchController implements Serializable {
     
@@ -53,7 +55,7 @@ public class SearchController implements Serializable {
     
     
     private SearchType searchType;
-    private static Map<String, SearchType> searchList = new HashMap<String, SearchType>();
+    //private static Map<String, SearchType> searchList = new HashMap<String, SearchType>();
     private ArrayList<Book> currentBookList;
     private Character[] russianLetters;
     private String searchString;
@@ -63,10 +65,11 @@ public class SearchController implements Serializable {
     public SearchController() {
         
          getAllBook();
+         /*
          ResourceBundle bandle = ResourceBundle.getBundle("lns.messages", FacesContext.getCurrentInstance().getViewRoot().getLocale());
          searchList.put(bandle.getString("author_name"), SearchType.AUTHOR);
          searchList.put(bandle.getString("book_name"), SearchType.TITLE);
-         
+         */
     }
     
 
@@ -129,12 +132,12 @@ public class SearchController implements Serializable {
     public String getSearchString() {
         return searchString;
     }
-    
+    /*
     public byte[] GetImage(int index){
         
         Book book = currentBookList.get(index);
         return book.getImage();
-    }
+}*/
 
     public void setCurrentBookList(ArrayList<Book> currentBookList) {
         this.currentBookList = currentBookList;
@@ -144,13 +147,13 @@ public class SearchController implements Serializable {
         return currentBookList;
     }
 
-    public void setSearchList(Map<String, SearchType> searchList) {
+   /* public void setSearchList(Map<String, SearchType> searchList) {
         SearchController.searchList = searchList;
     }
 
     public Map<String, SearchType> getSearchList() {
         return searchList;
-    }
+    }*/
        
 
     public void setSearchType(SearchType searchType) {
@@ -377,6 +380,11 @@ public class SearchController implements Serializable {
         FillBookBySql(currentSql);      
      }
 
+    public void searchStringChanged(ValueChangeEvent event){
+        searchString= event.getNewValue().toString();
+    }
+    
+    
     private void fillPageNumbers(long totalBookCount, int bookOnPage) {
      
         int pageCount = totalBookCount>0 ? (int)(totalBookCount/bookOnPage):0;
@@ -388,5 +396,7 @@ public class SearchController implements Serializable {
         }
         
     }
+    
+    
      
 }

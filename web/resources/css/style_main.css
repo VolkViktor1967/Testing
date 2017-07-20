@@ -415,10 +415,13 @@ body{
     text-align: center;
 }
 
-.welcome a:hover,a:active,a:focus  {
+.welcome a:hover:not(.len),a:active:not(.len),a:focus:not(.len), select:not(.len)  {
     background-color: #FFFFFF;
     color: #999;
 }
+
+
+
 
 .welcome a:visited {
     padding: 3px 3px 3px 15px; 
@@ -442,3 +445,9 @@ body{
     color: red;
 }
     
+a.save_link {
+  
+  
+  font-size: 10px;
+  font-weight: bold;
+}
