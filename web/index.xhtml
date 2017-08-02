@@ -39,23 +39,65 @@ and open the template in the editor.
             <div class="login_div" >
                 <p class="title"> #{msg.input_info} </p>
                 <h:form styleClass="login_form" >
-                    #{msg.input_name}<h:inputText id="username" value="#{user1.username}" required="true" requiredMessage="#{msg.input_error}" >
-                    <f:validator validatorId = "validators.UserValidator" />
-                    <f:ajax event="keyup" render="login_error"/>
-                    </h:inputText>
-                                        
-                    <h:commandButton action="#{loginControllers.login()}"  value=" #{msg.entry}" onclick="return CheckValue(this.form,'#{msg.login_required}')" />
-                                        
-                    <p><h:messages for="username" id = "login_error" styleClass="error" layout="list" /></p>
+                    
+                    <table>
+                        <tr>
+                            <td align="left">#{msg.input_name}</td>  
+                            <td>
+                                <h:inputText id="username" value="#{user1.username}" required="true" requiredMessage="#{msg.input_error}" >
+                                    <!-- <f:validator validatorId = "validators.UserValidator" />  -->
+                                    <!-- <f:ajax event="keyup" render="login_error"/>  -->
+                                </h:inputText>
+                            </td>
+                            <td width="100">
+                                <div id="loading_wrapper">
+                                    <h:graphicImage library = "images" name="ajax_loading.gif" width="30" height="30" />
+                                </div>
+                            </td>
+                            
+                        </tr>    
+                        <tr>
+                            <td align="left">#{msg.input_password}</td>
+                            <td>
+                                <h:inputSecret id="userpassword" value="#{user1.userpassword}" required="true" requiredMessage="#{msg.input_error_password}" >
+                                    <!-- <f:validator validatorId = "validators.UserValidator" />  -->
+                                    <!-- <f:ajax event="keyup" render="login_error"/>  -->
+                                </h:inputSecret>
+                            </td>
+                            <tr>
+                                <td  align="left" >
+                                   
+                                    <h:commandButton action="#{user1.login()}"  value=" #{msg.entry}" onclick="return CheckValue(this.form,'#{msg.login_required}')" >
+                                        <f:ajax onevent="showProgress" execute="@form" render="@form" />
+                                    </h:commandButton>
+                                          
+                                    
+                                </td>
+                                <td  align="left" >
+                                      <h:commandButton action="#{user1.logout()}"  value="#{msg.clear_user}"  />  
+                                </td>
+                            </tr>                        
+                        </tr>    
+                        <tr>
+                            <td>
+                               <p><h:messages for="username" id = "login_error" styleClass="error" layout="list" /></p> 
+                            </td>
+                        </tr>    
+                    </table>
+                    
                 </h:form>
                 
                 
                 <ui:include src="templates/locales.xhtml"/>
+               
                 
             </div>
             
            
-            <div class="footer">#{msg.author_info}</div>
+           <div class="footer">#{msg.author_info}</div>                
+                        
+            
+            
         </div>    
     </h:body>
 </html>

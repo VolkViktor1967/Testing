@@ -37,4 +37,6 @@ public class LocaleChanger implements Serializable {
     public void changeLocale(String localeCode){
         currentLocale = new Locale(localeCode);
     }
+  
+    
 }

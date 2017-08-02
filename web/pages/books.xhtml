@@ -28,7 +28,28 @@ and open the template in the editor.
 
             
 
-            <ui:define name="content_book" id="content_book">    
+            <ui:define name="content_book" id="content_book">   
+                
+                <h:form id="booksForm">
+                <h:panelGroup class="admin_tools" rendered="#{facesContext.externalContext.isUserInRole('ADMIN')}">
+                    <p>
+                    <!-- <h:commandLink rendered="'не забудь решетку'{!searchController.isEditMode()}" > -->
+                    <h:commandLink rendered="#{!searchController.isEditMode()}" >
+                        <h:graphicImage library="images" name="Add.png" width="10px" height="10px" style="" />
+                        <h:outputText value="#{msg.add_book}" ></h:outputText>
+                    </h:commandLink>
+                        
+                    <h:commandLink action="#{searchController.switchEditMode()}" rendered="#{!searchController.isEditMode()}" >
+                        <h:graphicImage library="images" name="compose.png" width="10px" height="10px" style="" />
+                        <h:outputText value="#{msg.edit}" ></h:outputText>
+                    </h:commandLink>
+                        
+                        <h:commandButton action="#{searchController.updateBooks()}" class="admin_tools"  value="#{msg.save_book}" rendered="#{searchController.isEditMode()}"/>
+                        <h:commandButton action="#{searchController.cansel()}" immediate="true" class="admin_tools" value="#{msg.cancel}" rendered="#{searchController.isEditMode()}"/>
+                   </p> 
+                </h:panelGroup>
+                
+                
                 <h:dataTable value="#{searchController.currentBookList}" var="b" cellspacing="10px" columnClasses="col1,col2,col3">
                    
                     <h:column>
@@ -39,13 +60,38 @@ and open the template in the editor.
 
                     <h:column>
                         <div>
-
-                            <h:outputLink value="#{request.contextPath}/PdfContent?id=#{b.id}" target="_blank">#{b.name} </h:outputLink>
-                            <p><strong>#{b.pageCount}</strong></p>
-                            <p><strong>#{b.author}</strong></p>
-                            <p><strong>#{b.genre}</strong></p>
-                            <p><strong>#{b.publishYear}</strong></p>
-                            <p><strong>#{b.isbn}</strong></p>
+                            
+                            <p>
+                               <h:inputText value="#{b.name}" class="field_edit" rendered="#{searchController.isEditMode() and b.edit}"></h:inputText>
+                               <h:outputLink  value="#{request.contextPath}/PdfContent?id=#{b.id}"  target="_blank" rendered="#{!b.edit}">#{b.name} </h:outputLink>
+                            </p>    
+                            
+                            <p>
+                                <strong class="field_edit">#{msg.pages}</strong>
+                                <h:inputText value="#{b.pageCount}" class="field_edit" rendered="#{searchController.isEditMode() and b.edit}"></h:inputText>
+                                <h:outputText value="#{b.pageCount}"  rendered="#{!b.edit}"></h:outputText>
+                            </p>
+                            
+                            <p>
+                                <strong class="field_edit">#{msg.author_name}</strong>
+                                <h:inputText value="#{b.author}"  class="field_edit" rendered="#{searchController.isEditMode() and b.edit}"></h:inputText>
+                                <h:outputText value="#{b.author}" rendered="#{!b.edit}"></h:outputText>
+                            </p>
+                            <p>
+                                <strong class="field_edit">#{msg.genre}</strong>
+                                <h:inputText value="#{b.genre}" class="field_edit" rendered="#{searchController.isEditMode() and b.edit}"></h:inputText>
+                                <h:outputText value="#{b.genre}"  rendered="#{!b.edit}"></h:outputText>
+                            </p>
+                            <p>
+                                <strong class="field_edit">#{msg.publishYear}</strong>
+                                <h:inputText value="#{b.publishYear}" class="field_edit" rendered="#{searchController.isEditMode() and b.edit}"></h:inputText>
+                                <h:outputText value="#{b.publishYear}"  rendered="#{!b.edit}"></h:outputText>
+                            </p>
+                            <p>
+                                <strong class="field_edit">#{msg.isbn}</strong>
+                                <h:inputText value="#{b.isbn}" class="field_edit" rendered="#{searchController.isEditMode() and b.edit}"></h:inputText>
+                                <h:outputText value="#{b.isbn}"  rendered="#{!b.edit}"></h:outputText>
+                            </p>
                             
                             <h:outputLink styleClass="save_link" value="#{request.contextPath}/PdfContent" target="_blank">
                                 <h:outputText value='#{msg.save}'></h:outputText>
@@ -60,17 +106,36 @@ and open the template in the editor.
 
                     <h:column>
                         <div class="book_details">
-                            <p><strong>#{b.publisher}</strong></p> 
+                            <p><strong>#{msg.descr}</strong></p> 
+                            <p>
+                            <h:inputTextarea value="#{b.descr}" class="descr_edit" rendered="#{searchController.isEditMode() and b.edit}"></h:inputTextarea>
+                            <h:outputText value="#{b.descr}" class="descr_show" styleClass="descr_show" rendered="#{!b.edit}"></h:outputText>
+                            </p>
                         </div>
                     </h:column>
+                    
+                    <h:column>
+                        <h:selectBooleanCheckbox value="#{b.edit}" rendered="#{!searchController.isEditMode()}">
+                            <f:ajax event="change"/>
+                        </h:selectBooleanCheckbox>
+                    </h:column>
+                    
+                    
 
                 </h:dataTable>
+                    
+                </h:form>
             </ui:define>
         
             
             <ui:define name="pagenator">
                 <h:form rendered="#{searchController.totalBookCount>searchController.bookOnPage}">
-
+                    <h:selectOneMenu styleClass="" value="#{searchController.bookOnPage}" onchange="submit()" valueChangeListener="#{searchController.booksOnPageChanged}">
+                        <f:selectItem itemValue="2" />
+                        <f:selectItem itemValue="5" />
+                        <f:selectItem itemValue="50" />
+                    </h:selectOneMenu>    
+                    
                     <ui:repeat value="#{searchController.pageNambers}" var="pageNamber">
                         <h:commandLink value="#{pageNamber}" action="#{searchController.selectPage()}" styleClass="#{pageNamber==searchController.selectedPageNumber ? 'selected_page':''}" >
                             <f:param name="page_namber" value="#{pageNamber}" />

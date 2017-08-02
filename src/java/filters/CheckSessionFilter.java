@@ -159,7 +159,7 @@ public class CheckSessionFilter implements Filter {
                      
         
         try {
-            if (session==null){
+            if (session==null || session.isNew()){
                wrappedResponse.sendRedirect(wrappedRequest.getContextPath()+"/index.jsp");
             }
             else{

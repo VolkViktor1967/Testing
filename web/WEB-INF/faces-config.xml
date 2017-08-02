@@ -23,6 +23,10 @@
             <from-outcome>login</from-outcome>
             <to-view-id>/pages/books.xhtml</to-view-id>
         </navigation-case>
+        <navigation-case>
+            <from-outcome>login_from_user</from-outcome>
+            <to-view-id>/pages/books.xhtml</to-view-id>
+        </navigation-case>
     </navigation-rule>
     
 </faces-config>

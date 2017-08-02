@@ -15,6 +15,14 @@ return true;
 }
 
 
-function ShowProgress(){
+function ShowProgress(data){
+    if (data.status==="begin"){
+        document.getElementById('loading_wrapper').style.display="block";
+        delay(1000);
+    }
+    else{
+        document.getElementById('loading_wrapper').style.display="none";
+    } 
+        
     return true;
 }

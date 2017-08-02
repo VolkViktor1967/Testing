@@ -22,6 +22,8 @@ import java.util.logging.Logger;
  */
 public class Book implements Serializable{
     
+    private boolean edit=false;
+    
     private Long id;
     private String name;
     private byte[] content;
@@ -32,6 +34,27 @@ public class Book implements Serializable{
     private Long   publishYear;
     private String publisher;
     private byte[] image;
+    private String descr;
+
+    public boolean isEdit() {
+        return edit;
+    }
+
+    public void setEdit(boolean edit) {
+        this.edit = edit;
+    }
+    
+    
+
+    public String getDescr() {
+        return descr;
+    }
+
+    public void setDescr(String descr) {
+        this.descr = descr;
+    }
+
+  
 
     public void setId(Long id) {
         this.id = id;

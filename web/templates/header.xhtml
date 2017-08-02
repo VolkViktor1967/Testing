@@ -20,10 +20,10 @@ and open the template in the editor.
             <div class="logo">
                 <h:graphicImage library="images" name="Jobs.jpg" width="76" height="97" />
             </div>
-            <div class="descr">
+            <div class="descr" id="descr">
                 <h5>#{msg.welcom_title}</h5>
             </div>
-             <div class="welcome">
+             <div class="welcome" id="welcome">
                  
                  <h:form>
                      
@@ -31,16 +31,19 @@ and open the template in the editor.
                      
                      <h:commandLink class="len" action = "#{localeChanger.changeLocale('ru')}"  >
                          <h:graphicImage library="images" name="ru.png" title="русский" style="margin:10px;"/>   
+                         <f:ajax render='@all' execute="@form"  />
                      </h:commandLink> 
                      
                        
                      <h:commandLink class="len" action = "#{localeChanger.changeLocale('en')}"  >
                          <h:graphicImage library="images" name="en.png" title="английский"  style="margin:10px;"/>   
+                         <f:ajax render='@all' execute="@form" />
                      </h:commandLink> 
                    
                      
                     <h5 style="margin:10px;" > #{msg.welcom},#{user1.username} </h5>
-                    <h:commandLink action="#{loginControllers.exit()}" value="#{msg.exit}" />
+                    
+                    <h:commandLink action="#{user1.logout()}" value="#{msg.exit}" /> 
                  </h:form>
                  
              </div>

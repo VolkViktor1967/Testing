@@ -58,7 +58,7 @@ public class ShowImage extends HttpServlet {
         try {
             Long id =Long.valueOf(request.getParameter("id"));
          
-          
+  /*        
             SearchController searchControler = (SearchController) request.getSession().getAttribute("searchController");
             //byte[] image =  searchControler.GetImage(id-1);
             Book book = new Book();
@@ -66,8 +66,8 @@ public class ShowImage extends HttpServlet {
             book.fillImageContent();
             response.setContentLength(book.getImage().length);
             out.write(book.getImage());
-          
-           /* 
+    */      
+            
             ArrayList<Book> list = (ArrayList<Book>)request.getSession(false).getAttribute("currentBookList");
             Book book;
           
@@ -82,7 +82,7 @@ public class ShowImage extends HttpServlet {
               response.setContentLength(book.getImage().length);
               out.write(book.getImage());
             }
-            */
+            
            
            
             

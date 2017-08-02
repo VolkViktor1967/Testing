@@ -12,6 +12,7 @@ import enums.SearchType;
 
 import java.io.Serializable;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -37,6 +38,7 @@ import org.apache.jasper.tagplugins.jstl.ForEach;
  */
 
 
+        
 @ManagedBean(eager = true)
 @SessionScoped
 
@@ -47,6 +49,8 @@ public class SearchController implements Serializable {
     
     private boolean requestFromPage=false;
     private int bookOnPage =2;
+    private int pageCount;
+    
     private int selectedGenreId;
     private char selectedLetter;
     private long selectedPageNumber=1;
@@ -61,6 +65,20 @@ public class SearchController implements Serializable {
     private String searchString;
     private String currentSql;
     
+    private boolean editMode;
+
+    public boolean isEditMode() {
+           return editMode;
+    }
+
+    public void setEditMode(boolean editMode) {
+        this.editMode = editMode;
+    }
+    
+    public void switchEditMode() {
+        this.editMode = !this.editMode;
+        
+    }
     
     public SearchController() {
         
@@ -205,9 +223,10 @@ public class SearchController implements Serializable {
                 book.setIsbn(rs.getString("isbn"));
                 book.setGenre(rs.getString("genre"));
                 book.setAuthor(rs.getString("author"));
-                //book.setPublishYear(rs.getLong("publish_year"));
+                book.setPublishYear(rs.getLong("publish_year"));
                 book.setPublisher(rs.getString("publisher"));
                 book.setImage(rs.getBytes("image"));
+                book.setDescr(rs.getString("descr"));
                 
                 
                 currentBookList.add(book);
@@ -248,7 +267,7 @@ public class SearchController implements Serializable {
     
     public  void getAllBook(){
         
-        FillBookBySql("select b.id, b.name, b.isbn, b.page_count, g.name as genre, a.fio as author, p.name as publisher\n,b.image,b.publish_year "
+        FillBookBySql("select b.id, b.name, b.isbn, b.page_count, g.name as genre, a.fio as author, p.name as publisher\n,b.image,b.publish_year,b.descr "
                 + "from library.book b\n"
                 + "left join library.author a on a.id=b.author_id\n"
                 + "left join library.genre g on g.id=b.genre_id\n"
@@ -269,7 +288,7 @@ public class SearchController implements Serializable {
         requestFromPage=false;
                 
         System.out.println("Id="+id);
-        FillBookBySql("select b.id, b.name, b.isbn, b.page_count, g.name as genre, a.fio as author, p.name as publisher\n,b.image "
+        FillBookBySql("select b.id, b.name, b.isbn, b.page_count, g.name as genre, a.fio as author, p.name as publisher\n,b.image,b.publish_year,b.descr "
                 + "from library.book b\n"
                 + "left join library.author a on a.id=b.author_id\n"
                 + "left join library.genre g on g.id=b.genre_id\n"
@@ -289,7 +308,7 @@ public class SearchController implements Serializable {
             return;
         }
         
-        StringBuilder sql = new StringBuilder("select b.id, b.name, b.isbn, b.page_count, g.name as genre, a.fio as author, p.name as publisher\n,b.image "
+        StringBuilder sql = new StringBuilder("select b.id, b.name, b.isbn, b.page_count, g.name as genre, a.fio as author, p.name as publisher\n,b.image,b.publish_year,b.descr "
                 + "from library.book b\n"
                 + "left join library.author a on a.id=b.author_id\n"
                 + "left join library.genre g on g.id=b.genre_id\n"
@@ -319,7 +338,7 @@ public class SearchController implements Serializable {
         selectedPageNumber=1;
         requestFromPage=false;
         
-        StringBuilder sql = new StringBuilder("select b.id, b.name, b.isbn, b.page_count, g.name as genre, a.fio as author, p.name as publisher\n,b.image "
+        StringBuilder sql = new StringBuilder("select b.id, b.name, b.isbn, b.page_count, g.name as genre, a.fio as author, p.name as publisher\n,b.image,b.publish_year,b.descr "
                 + "from library.book b\n"
                 + "left join library.author a on a.id=b.author_id\n"
                 + "left join library.genre g on g.id=b.genre_id\n"
@@ -334,6 +353,10 @@ public class SearchController implements Serializable {
     }
      
      public Character[] getRussianLetters(){
+        
+         //можно написать так 
+        // Character[] letters =  new Character[]{'А','Б',........};
+        
         Character[] letters =  new Character[33];
         letters[0]='А';
         letters[1]='Б';
@@ -376,6 +399,7 @@ public class SearchController implements Serializable {
      public void selectPage(){
         FacesContext context = FacesContext.getCurrentInstance();
         selectedPageNumber = Integer.valueOf(context.getExternalContext().getRequestParameterMap().get("page_namber"));       
+        if (isEditMode()) cansel();
         requestFromPage=true;
         FillBookBySql(currentSql);      
      }
@@ -386,10 +410,18 @@ public class SearchController implements Serializable {
     
     
     private void fillPageNumbers(long totalBookCount, int bookOnPage) {
-     
-        int pageCount = totalBookCount>0 ? (int)(totalBookCount/bookOnPage):0;
+        
+        
+     if (totalBookCount % bookOnPage ==0){
+         pageCount = bookOnPage > 0 ? (int)(totalBookCount/bookOnPage):0;
+     }
+     else{
+         pageCount = bookOnPage > 0 ? (int)(totalBookCount/bookOnPage)+1:0;
+     } 
+         
+       /* int pageCount = totalBookCount>0 ? (int)(totalBookCount/bookOnPage):0;*/
         pageNambers.clear();
-        if ((totalBookCount%bookOnPage)>0)  pageCount++;
+        //if ((totalBookCount%bookOnPage)>0)  pageCount++;
 
         for (int i=1; i<=pageCount;i++){
             pageNambers.add(i);
@@ -397,6 +429,109 @@ public class SearchController implements Serializable {
         
     }
     
+    public void updateBooks() {
+        
+        PreparedStatement prepStmt;
+        Connection conn=null;
+        Statement stmt=null;
+        
+                
+        try {
+            conn = Database.getConnection();
+            prepStmt = conn.prepareStatement("update library.book set name=?,isbn=?,page_count=?,publish_year=?,descr=? where id=? ");
+            
+            for (Book book: currentBookList){
+                if (!book.isEdit()) continue;
+                prepStmt.setString(1,book.getName());
+                prepStmt.setString(2,book.getIsbn());
+                prepStmt.setInt(3,book.getPageCount());
+                prepStmt.setLong(4,book.getPublishYear());
+                prepStmt.setString(5,book.getDescr());
+                
+                prepStmt.setLong(6,book.getId());
+                
+                /*book.setId(rs.getLong("id"));
+                prepStmt.setString(1,book.getName());
+                book.setPageCount(rs.getInt("page_count"));
+                book.setIsbn(rs.getString("isbn"));
+                book.setGenre(rs.getString("genre"));
+                book.setAuthor(rs.getString("author"));
+                book.setPublishYear(rs.getLong("publish_year"));
+                book.setPublisher(rs.getString("publisher"));
+                book.setImage(rs.getBytes("image"));*/
+                
+                prepStmt.addBatch();
+            }
+
+             prepStmt.executeBatch();
+                                        
+        } catch (SQLException ex) {
+            Logger.getLogger(BookList.class.getName()).log(Level.SEVERE, null, ex);
+        } 
+        finally{
+            try {
+                if (stmt!=null) stmt.close();
+                if (conn!=null) conn.close();
+            } catch (SQLException ex) {
+                Logger.getLogger(BookList.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+
+        switchEditMode();        
+         for(Book book:currentBookList){
+            book.setEdit(false);
+        }
+        //return "books";
+    }
     
-     
+    public void cansel() {
+        switchEditMode();
+        for(Book book:currentBookList){
+            book.setEdit(false);
+        }
+    }
+    
+    public void booksOnPageChanged(ValueChangeEvent e){
+        if (isEditMode()) cansel();
+        requestFromPage=false;
+        bookOnPage= Integer.valueOf(e.getNewValue().toString());
+        selectedPageNumber=1;
+        FillBookBySql(currentSql);
+    }
+
+
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+///////////////////////////////////
+
+
+   
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

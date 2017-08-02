@@ -8,33 +8,35 @@ and open the template in the editor.
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:ui="http://java.sun.com/jsf/facelets"
-          
+        
       xmlns:f="http://xmlns.jcp.org/jsf/core"
       
       >
     
     <f:view locale="#{localeChanger.currentLocale}" />
-    <head>
+    <h:head>
         <title>TODO supply a title</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    </head>
-    <body>
+    </h:head>
+    <h:body>
        <ui:composition>
            <div class="locales" >
            
            <h:form>
                
-                     <h:commandLink action = "#{localeChanger.changeLocale('en')}"  >
+                     <h:commandLink action = "#{localeChanger.changeLocale('en')}"   >
                          <h:graphicImage library="images" name="en.png" title="#{msg.en}"  style="margin:10px;"/>   
+                         <f:ajax render='@all' execute="@form" />
                      </h:commandLink> 
                
                      <h:commandLink action = "#{localeChanger.changeLocale('ru')}"  >
                          <h:graphicImage library="images" name="ru.png" title="#{msg.rus}" style="margin:10px;"/>   
+                         <f:ajax render='@all' execute="@form"  />
                      </h:commandLink> 
                        
            </h:form>
                
            </div>
         </ui:composition>
-    </body>
+    </h:body>
 </html>

@@ -54,7 +54,7 @@ body{
     margin: 50px;
 }
 .content{
-    height: 300px;
+    height: 200px;
 }
 
 .error{
@@ -67,4 +67,11 @@ body{
     
     text-align: center;
     
+}
+#loading_wrapper{
+    display:none;
+    position: fixed;
+    vertical-align: top;
+    float: right;
+ 
 }

@@ -12,7 +12,7 @@ body{
     font-family: Verdana,Genrva, sans-serif;
     font-size: 14px;
     font-style: normal;
-    font-weight: normal;
+   font-weight: normal;
     background-color: #eaeaea;
            
     margin: 100px;
@@ -27,8 +27,11 @@ body{
 */
 .book_details{
     float: left;
-    margin-top: 10px;
-   
+    width: 200px;
+    height: 100px;
+    /*color: #378de5;*/
+    /*border: solid;*/
+    
 }
 
 .letters{
@@ -98,9 +101,10 @@ body {
 }
 .container {
     width:900px;
-    height: 800px;
+    
     background-color: #FFF;
     margin: 20px auto;
+    
     
    
 }
@@ -350,6 +354,7 @@ body{
     padding: 10px 0;
     width: 65%;
     float: left;
+    
 }
 
 .left_menu {
@@ -389,12 +394,15 @@ body{
 .col2 a{
     font-weight: bolt;
     color: #378de5;
-    font-size: 15px;
+    font-size: 12px;
+    line-height: 15px;
     
 }
 .col2 p{
-    font-size: 11px;
-    
+    font-size: 12px;
+    /*line-height: 5px;*/
+    margin-bottom:auto; 
+  
 }
 
 .col3{
@@ -403,10 +411,8 @@ body{
     
 }
 
-.book_details p{
-    font-size: 11px;
-    
-}
+ 
+
 .welcome{
     float:left;
     width: 500px;
@@ -432,13 +438,14 @@ body{
 
 .pager{
     margin-left: 15px;
-    width: 90%;
+    width: 100%;
     float:left;
     
 } 
 .pager a{
     margin-left: 5px;
     margin-top: 50px;
+     
 }
 
 .pager .selected_page{
@@ -450,4 +457,34 @@ a.save_link {
   
   font-size: 10px;
   font-weight: bold;
+}
+
+.field_edit{
+  font-size: 12px;
+  line-height: 1px;
+  margin: 0.1px;
+  margin-top: 0.1em; /* Отступ сверху */
+  margin-bottom: 0.1em; /* Отступ снизу */
+   
+}
+
+.admin_tools{
+  font-size: 10px;
+}
+
+
+.descr_edit{
+    float: left;
+    width: 195px;
+    height: 70px;
+    color: #378de5;
+}
+
+
+.descr_show{
+    float: left;
+    width: 195px;
+    height: 70px;
+    font-size: 12px;
+    overflow:auto; /* Добавляем полосы прокрутки */
 }
