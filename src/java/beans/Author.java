@@ -8,6 +8,7 @@ package beans;
 /**
  *
  * @author User
+ * vvv comment
  */
 public class Author {
     
